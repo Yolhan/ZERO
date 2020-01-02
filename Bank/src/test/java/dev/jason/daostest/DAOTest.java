@@ -13,13 +13,13 @@ public class DAOTest {
 	@Test
 	public void createUserTest() {
 		UserLocalDAO useraccess = new UserLocalDAO();
-		
+
 		User phylicia = new User("babygirl", "12345", 0, null);
 		useraccess.createUser(phylicia);
 		User result = useraccess.getUserByUsername("babygirl");
-		
+
 		Assert.assertEquals("babygirl", result.getUsername());
-		System.out.println(result);
+		System.out.println("From Create User DAO Test: " + result);
 	}
 
 }
