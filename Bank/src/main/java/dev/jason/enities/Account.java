@@ -8,7 +8,6 @@ public class Account {
 	private int accountuserid;
 	private int accountid;
 
-	
 	// CTOR
 	public Account(String accountname, float accountbalance, int accountuserid) {
 		this.setAccountname(accountname);

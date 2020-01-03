@@ -9,14 +9,15 @@ public class User {
 	private String password;
 	private int userid;
 	private boolean issuperuser = false;
+	private boolean isloggedin = false;
 	Set<Account> accounts = new HashSet<Account>();
 	
 	// CTORs
-	public User(String username, String password, Set<Account> accounts, boolean issuperuser) {
+	public User(String username, String password, /*Set<Account> accounts, */boolean issuperuser) {
 		super();
 		this.setUsername(username);
 		this.setPassword(password);
-		this.setAccounts(accounts);
+		//this.setAccounts(accounts);
 		this.issuperuser = issuperuser;
 	}
 	
@@ -51,9 +52,21 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", userid=" + userid + ", accounts=" + accounts
-				+ ", issuperuser=" + issuperuser + "]";
+		return "User [username=" + username + ", password=" + password + ", userid=" + userid + ", issuperuser="
+				+ issuperuser + ", isloggedin=" + isloggedin + ", accounts=" + accounts + "]";
 	}
+
+	public boolean isloggedin() {
+		return isloggedin;
+	}
+
+	public void setIsloggedin(boolean isloggedin) {
+		this.isloggedin = isloggedin;
+	}
+
+
+
+
 	
 	
 	

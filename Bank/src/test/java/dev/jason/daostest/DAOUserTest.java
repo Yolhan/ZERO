@@ -16,7 +16,7 @@ public class DAOUserTest {
 	public void createUserTest() {
 		UserLocalDAO useraccess = new UserLocalDAO();
 
-		User phylicia = new User("babygirl", "12345", null, false);
+		User phylicia = new User("babygirl", "12345", false);
 		useraccess.createUser(phylicia);
 		User result = useraccess.getUserByUsername("babygirl");
 
@@ -27,7 +27,7 @@ public class DAOUserTest {
 	@Test
 	public void getUserBy() {
 		UserLocalDAO udao = new UserLocalDAO();
-		User user = new User("jcclair", "12345", null, false);
+		User user = new User("jcclair", "12345", false);
 		udao.createUser(user);
 		User user1 = udao.getUserByID(1001); // he's the first so we know it will work
 		User user2 = udao.getUserByUsername("jcclair");
@@ -38,7 +38,7 @@ public class DAOUserTest {
 	@Test
 	public void updateUser() {
 		UserLocalDAO udao = new UserLocalDAO();
-		User jason = new User("jcclair", "12345", null, true);
+		User jason = new User("jcclair", "12345", true);
 		udao.createUser(jason);
 		jason.setUsername("Wizard");
 		udao.updateUser(jason);
@@ -48,7 +48,7 @@ public class DAOUserTest {
 	@Test
 	public void deleteUserTest() {
 		UserLocalDAO udao = new UserLocalDAO();
-		User jason = new User("jcclair", "12345", null, true);
+		User jason = new User("jcclair", "12345", true);
 		udao.createUser(jason);
 		Assert.assertEquals("jcclair", udao.getUserByUsername("jcclair").getUsername());
 		udao.deleteUser(jason);

@@ -7,10 +7,10 @@ public interface UserService {
 
 	public User createUser(User user);
 	public User login(User user);
-	public boolean logout(User user);
-	public float getBalance(Account account);
+	public User logout(User user);
+	public Account getBalance(Account account);
 	public Account createAccount(Account account);
 	public Account depositToAccount(Account account, float amount);
 	public boolean deleteAccount(Account account);
-	public float withdrawFromAccount(Account account, float amount);
+	public Account withdrawFromAccount(Account account, float amount);
 }

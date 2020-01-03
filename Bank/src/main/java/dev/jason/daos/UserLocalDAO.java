@@ -26,6 +26,7 @@ public class UserLocalDAO implements UserDAO{
 				return user;
 			}
 		}
+		System.out.println("That username does not exist.");
 		return null;
 	}
 
@@ -47,6 +48,7 @@ public class UserLocalDAO implements UserDAO{
 		if (userstable.remove(user.getUserid()) != null) {
 			return true;
 		}
+		System.out.println("That user does not exist.");
 		return false;
 	}
 
