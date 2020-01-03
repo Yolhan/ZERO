@@ -7,15 +7,14 @@ public class Account {
 	private float accountbalance;
 	private int accountuserid;
 	private int accountid;
-	final private boolean issuperuser;
+
 	
 	// CTOR
-	public Account(String accountname, float accountbalance, int accountuserid, int accountid, boolean issuperuser) {
+	public Account(String accountname, float accountbalance, int accountuserid) {
 		this.setAccountname(accountname);
 		this.setAccountbalance(accountbalance);
 		this.setAccountuserid(accountuserid);
-		this.setAccountid(accountid);
-		this.issuperuser = issuperuser;
+
 	}
 	
 	// Getter and Setters
@@ -52,8 +51,5 @@ public class Account {
 				+ accountuserid + ", accountid=" + accountid + "]";
 	}
 
-	public boolean isSuperUser() {
-		return issuperuser;
-	}
 	
 }

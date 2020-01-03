@@ -8,15 +8,16 @@ public class User {
 	private String username;
 	private String password;
 	private int userid;
+	private boolean issuperuser = false;
 	Set<Account> accounts = new HashSet<Account>();
 	
 	// CTORs
-	public User(String username, String password, int userid, Set<Account> accounts) {
+	public User(String username, String password, Set<Account> accounts, boolean issuperuser) {
 		super();
 		this.setUsername(username);
 		this.setPassword(password);
-		this.setUserid(userid);
 		this.setAccounts(accounts);
+		this.issuperuser = issuperuser;
 	}
 	
 	// Getter and Setters
@@ -44,11 +45,14 @@ public class User {
 	public void setAccounts(Set<Account> accounts) {
 		this.accounts = accounts;
 	}
+	public boolean getIsSuperUser() {
+		return this.issuperuser;
+	}
 
 	@Override
 	public String toString() {
 		return "User [username=" + username + ", password=" + password + ", userid=" + userid + ", accounts=" + accounts
-				+ "]";
+				+ ", issuperuser=" + issuperuser + "]";
 	}
 	
 	

@@ -14,7 +14,8 @@ public class UserLocalDAO implements UserDAO{
 	
 	
 	public User createUser(User user) {
-		userstable.put(idsequencer++, user);
+		user.setUserid(++idsequencer);
+		userstable.put(idsequencer, user);
 		return user;
 	}
 

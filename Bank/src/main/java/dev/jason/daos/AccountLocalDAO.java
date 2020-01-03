@@ -11,7 +11,8 @@ public class AccountLocalDAO implements AccountDAO {
 	private int accountid = 1000;
 	
 	public Account createAccount(Account account) {
-		account.setAccountid(accountid++);
+		account.setAccountid(++accountid);
+		account.setAccountid(accountid);
 		return accountstable.put(account.getAccountid(), account);
 	}
 
