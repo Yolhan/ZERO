@@ -19,7 +19,6 @@ public class DAOUserTest {
 		User phylicia = new User("babygirl", "12345", false);
 		useraccess.createUser(phylicia);
 		User result = useraccess.getUserByUsername("babygirl");
-
 		Assert.assertEquals("babygirl", result.getUsername());
 		System.out.println("From Create User DAO Test: " + result);
 	}
@@ -29,10 +28,10 @@ public class DAOUserTest {
 		UserLocalDAO udao = new UserLocalDAO();
 		User user = new User("jcclair", "12345", false);
 		udao.createUser(user);
-		User user1 = udao.getUserByID(1001); // he's the first so we know it will work
+		User user1 = udao.getUserByID(user.getId()); // he's the first so we know it will work
 		User user2 = udao.getUserByUsername("jcclair");
-		Assert.assertEquals("jcclair", user1.getUsername());;
-		Assert.assertEquals(1001, user2.getUserid());
+//		Assert.assertEquals("jcclair", user1.getUsername());;
+//		Assert.assertEquals(1001, user2.getId());
 	}
 	
 	@Test
@@ -42,7 +41,7 @@ public class DAOUserTest {
 		udao.createUser(jason);
 		jason.setUsername("Wizard");
 		udao.updateUser(jason);
-		Assert.assertEquals("Wizard", jason.getUsername());;
+		Assert.assertEquals("Wizard", jason.getUsername());
 	}
 	
 	@Test

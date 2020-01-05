@@ -12,7 +12,8 @@ public class AccountLocalDAO implements AccountDAO {
 
 	public Account createAccount(Account account) {
 		account.setAccountid(++accountid);
-		return accountstable.put(account.getAccountid(), account);
+		accountstable.put(account.getId(), account);
+		return accountstable.get(accountid);
 	}
 
 	public Account getAccountByID(int id) {
@@ -20,27 +21,25 @@ public class AccountLocalDAO implements AccountDAO {
 			Account account = accountstable.get(id);
 			return account;
 		} catch (NullPointerException e) {
-			System.out.println("There is no account with that ID.");
+			//System.out.println("There is no account with that ID.");
 		}
-		System.out.println("getAccountByID: That account ID does not exist.");
+		//System.out.println("getAccountByID: That account ID does not exist.");
 		return null;
 	}
 
 	public Account updateAccount(Account account) {
-		return accountstable.put(account.getAccountid(), account);
+		return accountstable.put(account.getId(), account);
 	}
 
 	public boolean deleteAccount(Account account) {
-		if (accountstable.get(account.getAccountid()).getAccountbalance() == 0.0f) {
-			if (accountstable.remove(account.getAccountid()) != null)
+		if (accountstable.get(account.getId()).getBalance() == 0.0f) {
+			if (accountstable.remove(account.getId()) != null) 
 				return true;
+			
 			else {
-				System.out.println("Delete account: That account does not exist.");
 				return false;
 			}
-
 		}
-		System.out.println("Delete account: That account does not exist.");
 		return false;
 	}
 

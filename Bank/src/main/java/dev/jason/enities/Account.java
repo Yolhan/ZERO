@@ -3,51 +3,50 @@ package dev.jason.enities;
 public class Account {
 
 	// Data Members
-	private String accountname;
-	private float accountbalance;
-	private int accountuserid;
-	private int accountid;
+	private String name;
+	private float balance;
+	private int userid;
+	private int id;
 
 	// CTOR
-	public Account(String accountname, float accountbalance, int accountuserid) {
+	public Account(String accountname, float accountbalance, int userid) {
 		this.setAccountname(accountname);
-		this.setAccountbalance(accountbalance);
-		this.setAccountuserid(accountuserid);
-
+		this.setBalance(accountbalance);
+		this.setAccountuserid(userid);
 	}
 	
 	// Getter and Setters
-	public String getAccountname() {
-		return accountname;
+	public String getName() {
+		return name;
 	}
-	public void setAccountname(String accountname) {
-		this.accountname = accountname;
+	public void setAccountname(String name) {
+		this.name = name;
 	}
-	public float getAccountbalance() {
-		return accountbalance;
+	public float getBalance() {
+		return balance;
 	}
-	public void setAccountbalance(float accountbalance) {
-		if (accountbalance < 0) 
-			this.accountbalance = 0.0f;
+	public void setBalance(float balance) {
+		if (balance < 0) 
+			this.balance = 0.0f;
 		else
-			this.accountbalance = accountbalance;
+			this.balance = balance;
 	}
-	public int getAccountuserid() {
-		return accountuserid;
+	public int getUserid() {
+		return userid;
 	}
-	public void setAccountuserid(int accountuserid) {
-		this.accountuserid = accountuserid;
+	public void setAccountuserid(int userid) {
+		this.userid = userid;
 	}
-	public int getAccountid() {
-		return accountid;
+	public int getId() {
+		return id;
 	}
-	public void setAccountid(int accountid) {
-		this.accountid = accountid;
+	public void setAccountid(int id) {
+		this.id = id;
 	}
 	@Override
 	public String toString() {
-		return "Account [accountname=" + accountname + ", accountbalance=" + accountbalance + ", accountuserid="
-				+ accountuserid + ", accountid=" + accountid + "]";
+		return "Account [name=" + name + ", balance=" + balance + ", userid="
+				+ userid + ", id=" + id + "]";
 	}
 
 	

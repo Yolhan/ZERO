@@ -10,11 +10,11 @@ import dev.jason.enities.User;
 public class UserLocalDAO implements UserDAO{
 
 	public final static Map<Integer, User> userstable = new HashMap<Integer, User>();
-	private int idsequencer = 1000;
+	private static int idsequencer = 1000;
 	
 	
 	public User createUser(User user) {
-		user.setUserid(++idsequencer);
+		user.setId(++idsequencer);
 		userstable.put(idsequencer, user);
 		return user;
 	}
@@ -26,7 +26,7 @@ public class UserLocalDAO implements UserDAO{
 				return user;
 			}
 		}
-		System.out.println("That username does not exist.");
+		//System.out.println("That username does not exist.");
 		return null;
 	}
 
@@ -35,17 +35,17 @@ public class UserLocalDAO implements UserDAO{
 		User user = userstable.get(id);
 		return user;
 		} catch (NullPointerException e) {
-			System.out.println("No user exists with that ID.");
+			//System.out.println("No user exists with that ID.");
 			return null;
 		}
 	}
 
 	public User updateUser(User user) {
-		return userstable.put(user.getUserid(), user);
+		return userstable.put(user.getId(), user);
 	}
 
 	public boolean deleteUser(User user) {
-		if (userstable.remove(user.getUserid()) != null) {
+		if (userstable.remove(user.getId()) != null) {
 			return true;
 		}
 		System.out.println("That user does not exist.");

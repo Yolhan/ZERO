@@ -7,13 +7,13 @@ public class User {
 	// Data Members
 	private String username;
 	private String password;
-	private int userid;
+	private int id;
 	private boolean issuperuser = false;
 	private boolean isloggedin = false;
-	Set<Account> accounts = new HashSet<Account>();
+	//Set<Account> accounts = new HashSet<Account>();
 	
 	// CTORs
-	public User(String username, String password, /*Set<Account> accounts, */boolean issuperuser) {
+	public User(String username, String password, boolean issuperuser) {
 		super();
 		this.setUsername(username);
 		this.setPassword(password);
@@ -34,26 +34,14 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getUserid() {
-		return userid;
+	public int getId() {
+		return id;
 	}
-	public void setUserid(int userid) {
-		this.userid = userid;
-	}
-	public Set<Account> getAccounts() {
-		return accounts;
-	}
-	public void setAccounts(Set<Account> accounts) {
-		this.accounts = accounts;
+	public void setId(int userid) {
+		this.id = userid;
 	}
 	public boolean getIsSuperUser() {
 		return this.issuperuser;
-	}
-
-	@Override
-	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", userid=" + userid + ", issuperuser="
-				+ issuperuser + ", isloggedin=" + isloggedin + ", accounts=" + accounts + "]";
 	}
 
 	public boolean isloggedin() {
@@ -62,6 +50,12 @@ public class User {
 
 	public void setIsloggedin(boolean isloggedin) {
 		this.isloggedin = isloggedin;
+	}
+
+	@Override
+	public String toString() {
+		return "User [username=" + username + ", password=" + password + ", id=" + id + ", issuperuser=" + issuperuser
+				+ ", isloggedin=" + isloggedin + "]";
 	}
 
 

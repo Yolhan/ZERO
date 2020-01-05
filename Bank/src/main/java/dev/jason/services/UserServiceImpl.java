@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService{
 	
 	public User createUser(User user) {
 		user = udao.createUser(user); // updates ID
-		return udao.getUserByID(user.getUserid());
+		return udao.getUserByID(user.getId());
 	}
 
 	public User login(User user) {
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public User logout(User user) {
-		User temp = udao.getUserByID(user.getUserid());
+		User temp = udao.getUserByID(user.getId());
 		if (temp != null && temp.isloggedin()) {
 			user.setIsloggedin(false);
 			return udao.updateUser(user);
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public Account getBalance(Account account) {
-		Account temp = adao.getAccountByID(account.getAccountid());
+		Account temp = adao.getAccountByID(account.getId());
 		if (temp != null)
 			return temp;
 		return null;
@@ -44,15 +44,15 @@ public class UserServiceImpl implements UserService{
 
 	public Account createAccount(Account account) {
 		account = adao.createAccount(account);  // Updates ID
-		return adao.getAccountByID(account.getAccountid());
+		return adao.getAccountByID(account.getId());
 	}
 
 	public Account depositToAccount(Account account, float amount) {
 		if (amount > 0) {
-			account.setAccountbalance(account.getAccountbalance() + amount);
+			account.setBalance(account.getBalance() + amount);
 			account = adao.updateAccount(account);
 		}
-		return adao.getAccountByID(account.getAccountid());
+		return adao.getAccountByID(account.getId());
 	}
 
 	public boolean deleteAccount(Account account) {
@@ -60,12 +60,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public Account withdrawFromAccount(Account account, float amount) {
-		float balance = adao.getAccountByID(account.getAccountid()).getAccountbalance();
+		float balance = adao.getAccountByID(account.getId()).getBalance();
 		if (amount <= balance) {
-			account.setAccountbalance(account.getAccountbalance() - amount);
+			account.setBalance(account.getBalance() - amount);
 			account = adao.updateAccount(account);
 		}
-		return adao.getAccountByID(account.getAccountid());
+		return adao.getAccountByID(account.getId());
 	}
 
 }
