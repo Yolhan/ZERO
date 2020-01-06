@@ -36,7 +36,7 @@ public class AccountLocalDAO implements AccountDAO {
 		return accountstable.put(account.getId(), account);
 	}
 
-	public boolean deleteAccount(Account account) {
+	public boolean closeAccount(Account account) {
 		if (accountstable.get(account.getId()).getBalance() == 0.0f) {
 			if (accountstable.remove(account.getId()) != null) 
 				return true;
@@ -48,7 +48,7 @@ public class AccountLocalDAO implements AccountDAO {
 		return false;
 	}
 
-	public List<Account> getAccountByUserID(User user) {
+	public List<Account> getAccountsByUserID(User user) {
 		List<Account> worker = new ArrayList<Account>(accountstable.values());
 		int size = worker.size();
 		for (int i = 0; i < size; i++) {

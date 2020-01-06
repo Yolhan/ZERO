@@ -5,13 +5,17 @@ import dev.jason.enities.User;
 
 public interface UserService {
 
-	public User createUser(User user);
-	public User login(User user);
+	public User createUser();
+	public User login();
+	public int accountOptions(User user);
 	public User logout(User user);
 	public Account getBalance(Account account);
 	public void printAccounts(User user);
-	public Account createAccount(Account account);
-	public Account depositToAccount(Account account, float amount);
-	public boolean deleteAccount(Account account);
-	public Account withdrawFromAccount(Account account, float amount);
+	public Account createAccount(User user);
+	//public Account depositToAccount(Account account, float amount);
+	public boolean closeAccount(User user);
+	//public Account withdrawFromAccount(Account account, float amount);
+	public void accessAccount(User user);
+	public int initRequests();
+	public void close();
 }

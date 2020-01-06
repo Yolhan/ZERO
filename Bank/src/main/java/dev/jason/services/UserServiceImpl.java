@@ -1,7 +1,11 @@
 package dev.jason.services;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
 import dev.jason.daos.AccountDAO;
 import dev.jason.daos.AccountLocalDAO;
 import dev.jason.daos.UserDAO;
@@ -9,34 +13,117 @@ import dev.jason.daos.UserLocalDAO;
 import dev.jason.enities.Account;
 import dev.jason.enities.User;
 
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	private UserDAO udao = new UserLocalDAO();
 	private AccountDAO adao = new AccountLocalDAO();
-	
-	public User createUser(User user) {
-		
-		
-		
-		
-		
-		
-		
-		
+	Scanner scan = new Scanner(System.in);
+
+	public User createUser() {
+
+		String username;
+		String password;
+		boolean issuperuser = false;
+
+		// Getting username
+		do {
+			try {
+				System.out.println("What would you like your username to be?");
+				username = scan.nextLine();
+				if (username.length() >= 5)
+					break;
+				else
+					System.out.println("You must enter something.");
+			} catch (NoSuchElementException e) {
+				scan.nextLine();
+				System.out.println("You must enter something with 5 or more characters.");
+			}
+		} while (true);
+
+		// Getting new password
+		do {
+			try {
+				System.out.println("What would you like your password to be?");
+				password = scan.nextLine();
+				if (password.length() >= 8)
+					break;
+				else
+					System.out.println("You must enter something with 8 or more characters.");
+			} catch (NoSuchElementException e) {
+				scan.nextLine();
+				System.out.println("You must enter something.");
+			}
+		} while (true);
+		int result = -1;
+		// Getting superuser status
+		do {
+			try {
+				System.out.println("Master, are you a Super User?\n1) yes\n2) no\n");
+				result = scan.nextInt();
+				if (result > 0 && result <= 2) {
+					switch (result) {
+					case 1:
+						issuperuser = true;
+						break;
+					case 2:
+						issuperuser = false;
+						break;
+					}
+					break;
+				}
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid option.");
+			} catch (NoSuchElementException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid option.");
+			}
+		} while (true);
+		User user = new User(username, password, issuperuser);
+
 		user = udao.createUser(user); // updates ID
 		return udao.getUserByID(user.getId());
 	}
 
-	public User login(User user) {
-		User temp = udao.getUserByUsername(user.getUsername());
-		// The strings are returning false
-		if (temp != null && temp.getUsername().equals(user.getUsername()) && temp.getPassword().equals(user.getPassword())) {
-			user.setIsloggedin(true);
-			udao.updateUser(temp);
-			return temp;
+	public User login() {
+		String username;
+		String password;
+
+		do {
+			try {
+				System.out.println("Username: ");
+				username = scan.nextLine();
+				break;
+			} catch (NoSuchElementException e) {
+				scan.nextLine();
+				System.out.println("You must enter something with 5 or more characters.");
+			}
+		} while (true);
+
+		// Getting password
+		do {
+			try {
+				System.out.println("Password: ");
+				password = scan.nextLine();
+				break;
+			} catch (NoSuchElementException e) {
+				scan.nextLine();
+				System.out.println("You must enter something.");
+			}
+		} while (true);
+
+		User logininfo = new User(username, password, false);
+		User pulleduser = udao.getUserByUsername(logininfo.getUsername()); // gets info
+
+		if (pulleduser != null && pulleduser.getUsername().equals(logininfo.getUsername()) && pulleduser.getPassword().equals(logininfo.getPassword())) {
+			// Good login
+			pulleduser.setIsloggedin(true);
+			udao.updateUser(pulleduser);
+			return pulleduser;
 		}
-		//System.out.println("This is just a test");
+		System.out.println("The username and / or password is incorrect.");
 		return null;
+
 	}
 
 	public User logout(User user) {
@@ -55,12 +142,30 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 
-	public Account createAccount(Account account) {
-		account = adao.createAccount(account);  // Updates ID
-		return adao.getAccountByID(account.getId());
+	public Account createAccount(User user) {
+		do {
+			try {
+				// TODO:: Check for superuser access for foreign account access
+				System.out.println("What is the accounts new name?");
+				String accountname = scan.nextLine();
+				System.out.println("How much are you depositing?");
+				float accountbalance = scan.nextFloat();
+				scan.nextLine();
+				if (accountbalance > 0.0f) {
+					Account account = new Account(accountname, accountbalance, user.getId());
+					account = adao.createAccount(account); // Update account ID
+					System.out.println(account.getName() + " for " + user.getUsername() + " has been created.");
+					return adao.getAccountByID(account.getId());
+				} else
+					System.out.println("You must enter a positive number.");
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input.");
+			}
+		} while (true);
 	}
 
-	public Account depositToAccount(Account account, float amount) {
+	private Account depositToAccount(Account account, float amount) {
 		if (amount > 0) {
 			account.setBalance(account.getBalance() + amount);
 			account = adao.updateAccount(account);
@@ -68,25 +173,171 @@ public class UserServiceImpl implements UserService{
 		return adao.getAccountByID(account.getId());
 	}
 
-	public boolean deleteAccount(Account account) {
-			return adao.deleteAccount(account); // DAO checks if empty
+	public boolean closeAccount(User user) {
+		// return adao.deleteAccount(account); // DAO checks if empty
+		List<Account> accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
+		do {
+			try {
+				System.out.println("Which account would you like to close?");
+				for (int i = 0; i < accounts.size(); i++) {
+					System.out.println((i + 1) + ") " + accounts.get(i));
+				}
+				int result = scan.nextInt();
+				scan.nextLine();
+				if (result > 0 && result <= accounts.size()) {
+					// Remove account
+					Account account = accounts.get(result - 1);
+					if (!adao.closeAccount(account)) {
+						System.out.println("You must empty the account first");
+						break;
+					} else
+						return true;
+				}
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input.");
+			}
+		} while (true);
+		return false;
 	}
 
-	public Account withdrawFromAccount(Account account, float amount) {
+	private Account withdrawFromAccount(Account account, float amount) {
 		float balance = adao.getAccountByID(account.getId()).getBalance();
 		if (amount <= balance) {
 			account.setBalance(account.getBalance() - amount);
 			account = adao.updateAccount(account);
-		}
+		} else
+			System.out.println("You cannot withdraw more than what you have.");
 		return adao.getAccountByID(account.getId());
 	}
 
 	public void printAccounts(User user) {
-		List<Account> accounts = new ArrayList<Account>(adao.getAccountByUserID(user));
+		List<Account> accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
 		for (Account account : accounts) {
 			System.out.println(account);
 		}
-		
+
+	}
+
+	public int initRequests() {
+		int result = -1;
+		do { // hehe.. It says dodo. That makes me happy =)
+			try {
+				System.out.println("What would you like to do?\n");
+				System.out.println("1) Create User Account");
+				System.out.println("2) Login");
+				System.out.println("3) End Program");
+				result = scan.nextInt();
+				scan.nextLine();
+				if (result > 0 && result <= 3)
+					break;
+				else
+					System.out.println("That is not a valid option. Try again.");
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid option. Try again.");
+				result = -1;
+			}
+		} while (true);
+		return result;
+	}
+
+	public int accountOptions(User user) {
+		do {
+			try {
+				System.out.println("Welcome. What would you like to do with your accounts?");
+				System.out.println("1) Create Account\n2) Close Account\n3) Access Account\n4) Logout");
+				int result = scan.nextInt();
+				scan.nextLine();
+				if (result >= 1 && result <= 4)
+					return result;
+				else
+					System.out.println("That is not a valid input.");
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input.");
+			}
+		} while (true);
+
+	}
+
+	public void accessAccount(User user) {
+		List<Account> accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
+		Account account = null;
+		do {
+
+			for (int i = 0; i < accounts.size(); i++) {
+				System.out.println((i + 1) + ") " + accounts.get(i));
+			}
+			if (accounts.size() == 0) {
+				System.out.println("\n\nThere are no accounts for this user.\n\n");
+				return;
+			}
+			System.out.println("Would you like to access?");
+			try {
+				int result = scan.nextInt();
+				scan.nextLine();
+				if (result > 0 && result <= accounts.size()) {
+					account = accounts.get(result - 1);
+					break;
+				}
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid option.");
+			}
+		} while (true);
+
+		do {
+			System.out.println("Would you like to \n1) Withdraw\n2) Deposit\n3) Return");
+			try {
+				int result = scan.nextInt();
+				if (result > 0 && result <= 3) {
+					switch (result) {
+					case 1:
+						do {
+							System.out.println("How much would you like to withdraw?");
+							try {
+								float amount = scan.nextFloat();
+								scan.nextLine();
+								account = this.withdrawFromAccount(account, amount);
+								System.out.println("Your balance is " + account.getBalance());
+								break;
+							} catch (InputMismatchException e) {
+								scan.nextLine();
+								System.out.println("That is not a valid input.");
+							}
+						} while (true);
+						break;
+					case 2:
+						do {
+							System.out.println("How much would you like to deposit?");
+							try {
+								float amount = scan.nextFloat();
+								scan.nextLine();
+								account = this.depositToAccount(account, amount);
+								System.out.println("Your balance is " + account.getBalance());
+								break;
+							} catch (InputMismatchException e) {
+								scan.nextLine();
+								System.out.println("That is not a valid input.");
+							}
+						} while (true);
+						break;
+					case 3: 
+						return;
+					}
+				}
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input.");
+			}
+
+		} while (true);
+
+	}
+	
+	public void close() {
+		scan.close();
 	}
 
 }

@@ -13,11 +13,11 @@ public interface AccountDAO {
 	
 	// Read
 	public Account getAccountByID(int id);
-	public List<Account> getAccountByUserID(User user);
+	public List<Account> getAccountsByUserID(User user);
 	
 	// Update
 	public Account updateAccount(Account account);
 	
 	// Delete
-	public boolean deleteAccount(Account account);
+	public boolean closeAccount(Account account);
 }
