@@ -41,7 +41,8 @@ public class UserLocalDAO implements UserDAO{
 	}
 
 	public User updateUser(User user) {
-		return userstable.put(user.getId(), user);
+		userstable.put(user.getId(), user);
+		return user;
 	}
 
 	public boolean deleteUser(User user) {

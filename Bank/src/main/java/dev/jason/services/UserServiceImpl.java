@@ -1,5 +1,7 @@
 package dev.jason.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import dev.jason.daos.AccountDAO;
 import dev.jason.daos.AccountLocalDAO;
 import dev.jason.daos.UserDAO;
@@ -13,16 +15,27 @@ public class UserServiceImpl implements UserService{
 	private AccountDAO adao = new AccountLocalDAO();
 	
 	public User createUser(User user) {
+		
+		
+		
+		
+		
+		
+		
+		
 		user = udao.createUser(user); // updates ID
 		return udao.getUserByID(user.getId());
 	}
 
 	public User login(User user) {
 		User temp = udao.getUserByUsername(user.getUsername());
-		if (temp != null && temp.getUsername() == user.getUsername() && temp.getPassword() == user.getPassword()) {
+		// The strings are returning false
+		if (temp != null && temp.getUsername().equals(user.getUsername()) && temp.getPassword().equals(user.getPassword())) {
 			user.setIsloggedin(true);
-			return udao.updateUser(user);
+			udao.updateUser(temp);
+			return temp;
 		}
+		//System.out.println("This is just a test");
 		return null;
 	}
 
@@ -66,6 +79,14 @@ public class UserServiceImpl implements UserService{
 			account = adao.updateAccount(account);
 		}
 		return adao.getAccountByID(account.getId());
+	}
+
+	public void printAccounts(User user) {
+		List<Account> accounts = new ArrayList<Account>(adao.getAccountByUserID(user));
+		for (Account account : accounts) {
+			System.out.println(account);
+		}
+		
 	}
 
 }

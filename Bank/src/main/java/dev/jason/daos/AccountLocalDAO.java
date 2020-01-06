@@ -1,9 +1,14 @@
 package dev.jason.daos;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import dev.jason.enities.Account;
+import dev.jason.enities.User;
 
 public class AccountLocalDAO implements AccountDAO {
 
@@ -41,6 +46,20 @@ public class AccountLocalDAO implements AccountDAO {
 			}
 		}
 		return false;
+	}
+
+	public List<Account> getAccountByUserID(User user) {
+		List<Account> worker = new ArrayList<Account>(accountstable.values());
+		int size = worker.size();
+		for (int i = 0; i < size; i++) {
+			worker.get(i);
+			if (worker.get(i).getUserid() != user.getId()) {
+				worker.remove(i);
+				i--;
+				size = worker.size();
+			}
+		}
+		return worker;
 	}
 
 }

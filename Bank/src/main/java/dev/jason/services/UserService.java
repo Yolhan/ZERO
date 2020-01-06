@@ -9,6 +9,7 @@ public interface UserService {
 	public User login(User user);
 	public User logout(User user);
 	public Account getBalance(Account account);
+	public void printAccounts(User user);
 	public Account createAccount(Account account);
 	public Account depositToAccount(Account account, float amount);
 	public boolean deleteAccount(Account account);

@@ -1,7 +1,5 @@
 package dev.jason.servicetest;
 
-import static org.junit.Assert.*;
-
 import org.junit.Assert;
 import org.junit.Test;
 
