@@ -9,17 +9,18 @@ public class Account {
 	private int id;
 
 	// CTOR
+	public Account() {};
 	public Account(String accountname, float accountbalance, int userid) {
-		this.setAccountname(accountname);
+		this.setName(accountname);
 		this.setBalance(accountbalance);
-		this.setAccountuserid(userid);
+		this.setUserid(userid);
 	}
 	
 	// Getter and Setters
 	public String getName() {
 		return name;
 	}
-	public void setAccountname(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 	public float getBalance() {
@@ -34,13 +35,13 @@ public class Account {
 	public int getUserid() {
 		return userid;
 	}
-	public void setAccountuserid(int userid) {
+	public void setUserid(int userid) {
 		this.userid = userid;
 	}
 	public int getId() {
 		return id;
 	}
-	public void setAccountid(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	@Override

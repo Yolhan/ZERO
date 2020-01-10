@@ -2,51 +2,59 @@ package dev.jason.daostest;
 
 import org.junit.Test;
 
-import dev.jason.daos.AccountLocalDAO;
+import dev.jason.daos.AccountDAO;
+import dev.jason.daos.AccountJDBCDAO;
+import dev.jason.daos.UserDAO;
+import dev.jason.daos.UserJDBCDAO;
 import dev.jason.enities.Account;
+import dev.jason.enities.User;
 import junit.framework.Assert;
 
 public class DAOAccountTest {
 	
 	@Test
 	public void createAccountTest() {
-		AccountLocalDAO accountdao = new AccountLocalDAO();
+		AccountDAO accountdao = new AccountJDBCDAO();
+		UserDAO udao = new UserJDBCDAO();
+		User user = new User("newtest", "asdfjkqwef", false);
+		user = udao.createUser(user);
 		Account account = new Account("Checking", 1.0f, 0);
-		accountdao.createAccount(account);
+		account.setUserid(user.getId());
+		account = accountdao.createAccount(account); // update the database and updates the local id
+		//System.out.println(account);
 		Assert.assertEquals("Checking", accountdao.getAccountByID(account.getId()).getName());
-		System.out.println("From test createAccountTest: " + accountdao.getAccountByID(1001));
+		System.out.println("From test createAccountTest: " + account);
 	}
 	
 	@Test
 	public void getAccountByIDTest() {
-		AccountLocalDAO adao = new AccountLocalDAO();
-		Account checking = new Account("Checking", -250000.0f, 0);
-		adao.createAccount(checking);
-		Assert.assertEquals("Checking", adao.getAccountByID(checking.getId()).getName());
-		System.out.println("Test from getAccountByID: " + adao.getAccountByID(1001));
+		AccountDAO adao = new AccountJDBCDAO();
+		Account checking = new Account();
+		checking.setId(1);
+		checking = adao.getAccountByID(checking.getId());
+		Assert.assertEquals("Checking", checking.getName());
+		System.out.println("Test from getAccountByID: " + checking);
 	}
 	
 	@Test
 	public void updateAccountTest() {
-		AccountLocalDAO adao = new AccountLocalDAO();
-		Account savings = new Account("Savings", 0.0f, 0);
-		adao.createAccount(savings);
-		savings.setBalance(200.00f);
-		savings.setAccountname("VIP Savings");
-		savings.setAccountuserid(404);
-		adao.updateAccount(savings);
-		Assert.assertEquals("VIP Savings", adao.getAccountByID(savings.getId()).getName());
-		System.out.println("Test from updateAccountTest: " + adao.getAccountByID(savings.getId()));
+		AccountDAO adao = new AccountJDBCDAO();
+		Account account = new Account("Savings", 500.0f, 1);
+		account.setId(1);
+		account = adao.updateAccount(account);
+		Assert.assertEquals("Savings", account.getName());
+		System.out.println("Test from updateAccountTest: " + account);
+		
 	}
 	
 	@Test
-	public void deleteAccountTest() {
-		AccountLocalDAO adao = new AccountLocalDAO();
-		Account checking = new Account("Checking", 0.0f, 0);
-		adao.createAccount(checking);
-		Account worker = adao.getAccountByID(checking.getId());
-		adao.deleteAccount(worker);
-		
+	public void closeAccountTest() {
+		AccountDAO adao = new AccountJDBCDAO();
+		Account account = new Account("Goodies", 0, 1);
+		account.setId(8);
+		boolean result = adao.closeAccount(account);
+		Assert.assertEquals(true, result);
+		System.out.println("Test from closeAccountTest: " + result);
 	}
 
 

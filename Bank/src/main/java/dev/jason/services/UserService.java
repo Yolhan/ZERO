@@ -10,7 +10,8 @@ public interface UserService {
 	public int accountOptions(User user);
 	public User logout(User user);
 	public Account getBalance(Account account);
-	public void printAccounts(User user);
+	public void printAccountsByID(User user);
+	public void printAccounts();
 	public Account createAccount(User user);
 	//public Account depositToAccount(Account account, float amount);
 	public boolean closeAccount(User user);

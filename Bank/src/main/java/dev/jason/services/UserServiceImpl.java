@@ -7,17 +7,18 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import dev.jason.daos.AccountDAO;
-import dev.jason.daos.AccountLocalDAO;
+import dev.jason.daos.AccountJDBCDAO;
 import dev.jason.daos.UserDAO;
-import dev.jason.daos.UserLocalDAO;
+import dev.jason.daos.UserJDBCDAO;
 import dev.jason.enities.Account;
 import dev.jason.enities.User;
 
 public class UserServiceImpl implements UserService {
 
-	private UserDAO udao = new UserLocalDAO();
-	private AccountDAO adao = new AccountLocalDAO();
+	private UserDAO udao = new UserJDBCDAO();
+	private AccountDAO adao = new AccountJDBCDAO();
 	Scanner scan = new Scanner(System.in);
+	// User loggedinuser;
 
 	public User createUser() {
 
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
 		// Getting superuser status
 		do {
 			try {
-				System.out.println("Master, are you a Super User?\n1) yes\n2) no\n");
+				System.out.println("Are you a Super User?\n1) yes\n2) no\n");
 				result = scan.nextInt();
 				if (result > 0 && result <= 2) {
 					switch (result) {
@@ -82,6 +83,7 @@ public class UserServiceImpl implements UserService {
 		User user = new User(username, password, issuperuser);
 
 		user = udao.createUser(user); // updates ID
+		System.out.println("User " + user.getUsername() + " has been created.");
 		return udao.getUserByID(user.getId());
 	}
 
@@ -114,11 +116,13 @@ public class UserServiceImpl implements UserService {
 
 		User logininfo = new User(username, password, false);
 		User pulleduser = udao.getUserByUsername(logininfo.getUsername()); // gets info
-
-		if (pulleduser != null && pulleduser.getUsername().equals(logininfo.getUsername()) && pulleduser.getPassword().equals(logininfo.getPassword())) {
+		// user = udao.getUserByID(logininfo.getId());
+		if (pulleduser != null && pulleduser.getUsername().equals(logininfo.getUsername())
+				&& pulleduser.getPassword().equals(logininfo.getPassword())) {
 			// Good login
 			pulleduser.setIsloggedin(true);
-			udao.updateUser(pulleduser);
+			pulleduser = udao.updateUser(pulleduser);
+			System.out.println("User " + pulleduser.getUsername() + " has logged in.");
 			return pulleduser;
 		}
 		System.out.println("The username and / or password is incorrect.");
@@ -130,8 +134,11 @@ public class UserServiceImpl implements UserService {
 		User temp = udao.getUserByID(user.getId());
 		if (temp != null && temp.isloggedin()) {
 			user.setIsloggedin(false);
-			return udao.updateUser(user);
+			user = udao.updateUser(user);
+			System.out.println("User " + user.getUsername() + " has logged out.");
+			return user;
 		}
+		System.out.println("User " + user.getUsername() + " is not logged in.");
 		return null;
 	}
 
@@ -169,13 +176,18 @@ public class UserServiceImpl implements UserService {
 		if (amount > 0) {
 			account.setBalance(account.getBalance() + amount);
 			account = adao.updateAccount(account);
-		}
+			System.out.println("Your new balance is " + account.getBalance());
+		} else
+			System.out.println("Transaction cancelled. You must deposit a positive amount.");
 		return adao.getAccountByID(account.getId());
 	}
 
 	public boolean closeAccount(User user) {
-		// return adao.deleteAccount(account); // DAO checks if empty
-		List<Account> accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
+		List<Account> accounts = null;
+		if (user.getIsSuperUser())
+			accounts = new ArrayList<Account>(adao.getAccounts());
+		else
+			accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
 		do {
 			try {
 				System.out.println("Which account would you like to close?");
@@ -190,8 +202,10 @@ public class UserServiceImpl implements UserService {
 					if (!adao.closeAccount(account)) {
 						System.out.println("You must empty the account first");
 						break;
-					} else
+					} else {
+						System.out.println("Account " + account.getName() + " has been closed.");
 						return true;
+					}
 				}
 			} catch (InputMismatchException e) {
 				scan.nextLine();
@@ -206,12 +220,13 @@ public class UserServiceImpl implements UserService {
 		if (amount <= balance) {
 			account.setBalance(account.getBalance() - amount);
 			account = adao.updateAccount(account);
+			System.out.println("Your new balance is " + account.getBalance());
 		} else
 			System.out.println("You cannot withdraw more than what you have.");
 		return adao.getAccountByID(account.getId());
 	}
 
-	public void printAccounts(User user) {
+	public void printAccountsByID(User user) {
 		List<Account> accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
 		for (Account account : accounts) {
 			System.out.println(account);
@@ -227,6 +242,7 @@ public class UserServiceImpl implements UserService {
 				System.out.println("1) Create User Account");
 				System.out.println("2) Login");
 				System.out.println("3) End Program");
+				
 				result = scan.nextInt();
 				scan.nextLine();
 				if (result > 0 && result <= 3)
@@ -246,7 +262,7 @@ public class UserServiceImpl implements UserService {
 		do {
 			try {
 				System.out.println("Welcome. What would you like to do with your accounts?");
-				System.out.println("1) Create Account\n2) Close Account\n3) Access Account\n4) Logout");
+				System.out.println("1) Create Account\n2) Close Account\n3) Account Transaction\n4) Logout");
 				int result = scan.nextInt();
 				scan.nextLine();
 				if (result >= 1 && result <= 4)
@@ -262,7 +278,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public void accessAccount(User user) {
-		List<Account> accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
+		List<Account> accounts = null;
+		if (user.getIsSuperUser())
+			accounts = new ArrayList<Account>(adao.getAccounts());
+		else
+			accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
 		Account account = null;
 		do {
 
@@ -277,7 +297,7 @@ public class UserServiceImpl implements UserService {
 			try {
 				int result = scan.nextInt();
 				scan.nextLine();
-				if (result > 0 && result <= accounts.size()) {
+				if (result > 0 && result <= accounts.size() && accounts.size() > 0) {
 					account = accounts.get(result - 1);
 					break;
 				}
@@ -323,7 +343,7 @@ public class UserServiceImpl implements UserService {
 							}
 						} while (true);
 						break;
-					case 3: 
+					case 3:
 						return;
 					}
 				}
@@ -335,9 +355,18 @@ public class UserServiceImpl implements UserService {
 		} while (true);
 
 	}
-	
+
 	public void close() {
 		scan.close();
+	}
+
+	public void printAccounts() {
+		// TODO:: Need to make this method in JDBC sor super user
+		List<Account> accounts = new ArrayList<Account>(adao.getAccounts());
+		for (Account account : accounts) {
+			System.out.println(account);
+		}
+
 	}
 
 }

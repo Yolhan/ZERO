@@ -13,6 +13,7 @@ public interface AccountDAO {
 	
 	// Read
 	public Account getAccountByID(int id);
+	public List<Account> getAccounts();
 	public List<Account> getAccountsByUserID(User user);
 	
 	// Update

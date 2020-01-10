@@ -13,6 +13,7 @@ public class User {
 	//Set<Account> accounts = new HashSet<Account>();
 	
 	// CTORs
+	public User(){};
 	public User(String username, String password, boolean issuperuser) {
 		super();
 		this.setUsername(username);
@@ -50,6 +51,9 @@ public class User {
 
 	public void setIsloggedin(boolean isloggedin) {
 		this.isloggedin = isloggedin;
+	}
+	public void setIsSuperUser(boolean issuperuser) {
+		this.issuperuser = issuperuser;
 	}
 
 	@Override
