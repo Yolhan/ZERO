@@ -19,4 +19,6 @@ public interface UserService {
 	public void accessAccount(User user);
 	public int initRequests();
 	public void close();
+	public int superUserOptions();
+	public void deleteUsers();
 }

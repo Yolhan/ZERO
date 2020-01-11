@@ -1,6 +1,11 @@
 package dev.jason.daos;
 
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mariadb.jdbc.internal.com.read.dao.Results;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -121,13 +126,44 @@ public class UserJDBCDAO implements UserDAO{
 		
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			//System.out.println(user.getId());
 			ps.setInt(1, user.getId());
 			ps.execute();
 			return true;
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.out.println("You must close all account before closing the client.");
 		} catch (SQLException e) {
 			System.out.println("There was no user with that ID.");
+			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public List<User> getUsers() {
+		List<User> users = new ArrayList<User>();
+		Connection conn = ConnectionUtil.getConnection();
+		String sql = "SELECT * FROM bank_user";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.execute();
+			ResultSet rs = ps.getResultSet();
+			while(rs.next()) {
+				User user = new User();
+				user.setId(rs.getInt("bu_id"));
+				user.setUsername(rs.getString("username"));
+				user.setPassword(rs.getString("password"));
+				if(rs.getInt("is_loggedin") == 1) user.setIsloggedin(true); 
+				else user.setIsloggedin(false);
+				if(rs.getInt("is_superuser") == 1) user.setIsSuperUser(true);
+				user.setIsSuperUser(false);
+				users.add(user);
+			}
+
+			return users;
+		} catch (SQLException e) {
+			System.out.println("Something gone done wrong in getUsers from UserJDBCDAO");
+		}
+		return null;
 	}
 
 }

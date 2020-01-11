@@ -98,6 +98,7 @@ public class AccountJDBCDAO implements AccountDAO {
 
 	public boolean closeAccount(Account account) {
 
+		if (account.getBalance() != 0.0f) return false;
 		Connection conn = ConnectionUtil.getConnection();
 		String sql = "DELETE FROM account WHERE a_id=?";
 		try {

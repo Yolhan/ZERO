@@ -34,10 +34,10 @@ public class UserServiceImpl implements UserService {
 				if (username.length() >= 5)
 					break;
 				else
-					System.out.println("You must enter something.");
+					System.out.println("You must enter something with 5 or more characters.");
 			} catch (NoSuchElementException e) {
 				scan.nextLine();
-				System.out.println("You must enter something with 5 or more characters.");
+				System.out.println("You must enter something.");
 			}
 		} while (true);
 
@@ -152,7 +152,6 @@ public class UserServiceImpl implements UserService {
 	public Account createAccount(User user) {
 		do {
 			try {
-				// TODO:: Check for superuser access for foreign account access
 				System.out.println("What is the accounts new name?");
 				String accountname = scan.nextLine();
 				System.out.println("How much are you depositing?");
@@ -188,6 +187,11 @@ public class UserServiceImpl implements UserService {
 			accounts = new ArrayList<Account>(adao.getAccounts());
 		else
 			accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
+		if ( accounts.size() == 0) {
+			System.out.println("There are not accounts to close.");
+			return false;
+		}
+		
 		do {
 			try {
 				System.out.println("Which account would you like to close?");
@@ -242,7 +246,7 @@ public class UserServiceImpl implements UserService {
 				System.out.println("1) Create User Account");
 				System.out.println("2) Login");
 				System.out.println("3) End Program");
-				
+
 				result = scan.nextInt();
 				scan.nextLine();
 				if (result > 0 && result <= 3)
@@ -366,6 +370,56 @@ public class UserServiceImpl implements UserService {
 		for (Account account : accounts) {
 			System.out.println(account);
 		}
+
+	}
+
+	public int superUserOptions() {
+		do {
+			System.out.println("Would you like to:\n1)Delete User Account\n2)Access User Accounts\n3)Logout");
+			try {
+				int result = scan.nextInt();
+				scan.nextLine();
+				if (result > 0 && result <= 3)
+					return result;
+				else
+					System.out.println("That is not a valid answer. Please try again.");
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input. Please try again.");
+			}
+		} while (true);
+	}
+
+	public void deleteUsers() {
+		List<User> users = new ArrayList<User>(udao.getUsers());
+
+		do {
+			for (int i = 0; i < users.size(); i++) {
+				System.out.println((i + 1) + ") " + users.get(i).getUsername());
+			}
+			try {
+				System.out.println("Which User would you like to delete?\n0)Return");
+				int result = scan.nextInt();
+				scan.nextLine();
+				if (result >= 0 && result <= users.size()) {
+					if (result == 0)
+						return;
+					User user = users.get(result - 1);
+					//System.out.println(user);
+					if (udao.deleteUser(user))
+						System.out.println("User " + user.getUsername() + " has been removed.");
+//					else
+//						System.out.println("There was an issue removing that user.");
+					return;
+				} else {
+					System.out.println("That is not a valid response. Please try again.");
+				}
+
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input.");
+			}
+		} while (true);
 
 	}
 

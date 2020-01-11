@@ -11,7 +11,9 @@ public class App {
 		// Scanner scan = new Scanner(System.in);
 		UserService us = new UserServiceImpl();
 		boolean isRunning = true;
+		boolean isLoggedin = false;
 		int result = 0;
+		User loggedin = null;
 		// User loggedUser = null;
 		System.out.println("Welcome to L.R.Jenkins Bank\n");
 		// Main program loop
@@ -27,28 +29,46 @@ public class App {
 				break;
 			case 2: // Login
 				// Getting username
-				User loggedin = us.login();
-				if (loggedin != null) {
-					boolean isinaccountoptions = true;
-					do {
-						int accountresult = us.accountOptions(loggedin);
-						switch (accountresult) {
-						case 1: // Create account
-							us.createAccount(loggedin);
-							break;
-						case 2: // Close Account
-							us.closeAccount(loggedin);
-							break;
-						case 3: // Access Account
-							us.accessAccount(loggedin);
-							result = 0;
-							break;
-						case 4: // Logout
-							us.logout(loggedin);
-							isinaccountoptions = false;
-							break;
-						}
-					} while (isinaccountoptions);
+				loggedin = us.login();
+				while (loggedin != null) {
+					//isLoggedin = true;
+						boolean isinaccountoptions = false;
+						do {
+							int accountresult = -1;
+							if (loggedin.getIsSuperUser()) {
+								result = us.superUserOptions();
+								if (result == 1) {
+									us.deleteUsers();
+								}
+								if (result == 2) {
+									accountresult = us.accountOptions(loggedin);
+								} else if (result == 3){
+									System.out.println("One");
+									us.logout(loggedin);
+									loggedin = null;
+								}
+							} else
+								accountresult = us.accountOptions(loggedin);
+							switch (accountresult) {
+							case 1: // Create account
+								us.createAccount(loggedin);
+								break;
+							case 2: // Close Account
+								us.closeAccount(loggedin);
+								break;
+							case 3: // Access Account
+								us.accessAccount(loggedin);
+								result = 0;
+								break;
+							case 4: // Exit account Options
+								System.out.println("Two");
+								us.logout(loggedin);
+								loggedin = null;
+								isinaccountoptions = false;
+								break;
+							}
+							//if (accountresult == 4) break;
+						} while (isinaccountoptions);
 				}
 				result = 0;
 				break;
@@ -56,6 +76,11 @@ public class App {
 				isRunning = false;
 				System.out.println("Enjoy your day. Ending program.");
 				continue;
+			case 4: // Log out
+				System.out.println("Three");
+				us.logout(loggedin);
+				loggedin = null;
+				break;
 			}
 
 		} while (isRunning);
