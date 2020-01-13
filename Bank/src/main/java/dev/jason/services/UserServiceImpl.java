@@ -187,11 +187,11 @@ public class UserServiceImpl implements UserService {
 			accounts = new ArrayList<Account>(adao.getAccounts());
 		else
 			accounts = new ArrayList<Account>(adao.getAccountsByUserID(user));
-		if ( accounts.size() == 0) {
+		if (accounts.size() == 0) {
 			System.out.println("There are not accounts to close.");
 			return false;
 		}
-		
+
 		do {
 			try {
 				System.out.println("Which account would you like to close?");
@@ -375,11 +375,12 @@ public class UserServiceImpl implements UserService {
 
 	public int superUserOptions() {
 		do {
-			System.out.println("Would you like to:\n1)Delete User Account\n2)Access User Accounts\n3)Logout");
+			System.out.println(
+					"Would you like to:\n1)View Users\n2)Delete User Account\n3)Update User Account\n4)Access Banking Accounts\n5)Logout");
 			try {
 				int result = scan.nextInt();
 				scan.nextLine();
-				if (result > 0 && result <= 3)
+				if (result > 0 && result <= 5)
 					return result;
 				else
 					System.out.println("That is not a valid answer. Please try again.");
@@ -405,7 +406,7 @@ public class UserServiceImpl implements UserService {
 					if (result == 0)
 						return;
 					User user = users.get(result - 1);
-					//System.out.println(user);
+					// System.out.println(user);
 					if (udao.deleteUser(user))
 						System.out.println("User " + user.getUsername() + " has been removed.");
 //					else
@@ -421,6 +422,98 @@ public class UserServiceImpl implements UserService {
 			}
 		} while (true);
 
+	}
+
+	public void updateUser() {
+		List<User> users = new ArrayList<User>(udao.getUsers());
+		do {
+			System.out.println("What user would you like to update?");
+			for (int i = 0; i < users.size(); i++) {
+				System.out.println((i+1) + ")" + users.get(i).getUsername());
+			}
+			try {
+				int result = scan.nextInt();
+				scan.nextLine();
+				if (result > 0 && result < users.size()) {
+
+					String username;
+					String password;
+					boolean issuperuser = false;
+
+					// Getting username
+					do {
+						try {
+							System.out.println("What would you like your username to be?");
+							username = scan.nextLine();
+							if (username.length() >= 5)
+								break;
+							else
+								System.out.println("You must enter something with 5 or more characters.");
+						} catch (NoSuchElementException e) {
+							scan.nextLine();
+							System.out.println("You must enter something.");
+						}
+					} while (true);
+
+					// Getting new password
+					do {
+						try {
+							System.out.println("What would you like your password to be?");
+							password = scan.nextLine();
+							if (password.length() >= 8)
+								break;
+							else
+								System.out.println("You must enter something with 8 or more characters.");
+						} catch (NoSuchElementException e) {
+							scan.nextLine();
+							System.out.println("You must enter something.");
+						}
+					} while (true);
+					int result2 = -1;
+					// Getting superuser status
+					do {
+						try {
+							System.out.println("Are you a Super User?\n1) yes\n2) no\n");
+							result2 = scan.nextInt();
+							if (result > 0 && result2 <= 2) {
+								switch (result2) {
+								case 1:
+									issuperuser = true;
+									break;
+								case 2:
+									issuperuser = false;
+									break;
+								}
+								break;
+							}
+						} catch (InputMismatchException e) {
+							scan.nextLine();
+							System.out.println("That is not a valid option.");
+						} catch (NoSuchElementException e) {
+							scan.nextLine();
+							System.out.println("That is not a valid option.");
+						}
+					} while (true);
+					User user = new User(username, password, issuperuser);
+					user.setId(users.get(result-1).getId());
+					System.out.println(user);
+					user = udao.updateUser(user);
+					break;
+				}
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("That is not a valid input. Please try again.");
+			}
+		} while (true);
+
+	}
+
+	public void printUsers() {
+		List<User> users = new ArrayList<User>(udao.getUsers());
+		for (User user : users) {
+			System.out.println(user);
+		}
+		
 	}
 
 }

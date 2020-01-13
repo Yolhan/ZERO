@@ -38,11 +38,18 @@ public class App {
 							if (loggedin.getIsSuperUser()) {
 								result = us.superUserOptions();
 								if (result == 1) {
-									us.deleteUsers();
+									us.printUsers();
 								}
 								if (result == 2) {
+									us.deleteUsers();
+								}
+								if (result == 3) {
+									us.updateUser();
+								} 
+								if (result == 4){
 									accountresult = us.accountOptions(loggedin);
-								} else if (result == 3){
+								}
+								if (result == 5) {
 									System.out.println("One");
 									us.logout(loggedin);
 									loggedin = null;

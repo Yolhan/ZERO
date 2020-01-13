@@ -21,4 +21,6 @@ public interface UserService {
 	public void close();
 	public int superUserOptions();
 	public void deleteUsers();
+	public void updateUser();
+	public void printUsers();
 }
