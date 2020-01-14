@@ -35,6 +35,7 @@ public class App {
 						boolean isinaccountoptions = false;
 						do {
 							int accountresult = -1;
+							// Super User
 							if (loggedin.getIsSuperUser()) {
 								result = us.superUserOptions();
 								if (result == 1) {
@@ -50,11 +51,10 @@ public class App {
 									accountresult = us.accountOptions(loggedin);
 								}
 								if (result == 5) {
-									System.out.println("One");
 									us.logout(loggedin);
 									loggedin = null;
 								}
-							} else
+							} else // Normal User
 								accountresult = us.accountOptions(loggedin);
 							switch (accountresult) {
 							case 1: // Create account
@@ -68,7 +68,6 @@ public class App {
 								result = 0;
 								break;
 							case 4: // Exit account Options
-								System.out.println("Two");
 								us.logout(loggedin);
 								loggedin = null;
 								isinaccountoptions = false;
@@ -84,7 +83,6 @@ public class App {
 				System.out.println("Enjoy your day. Ending program.");
 				continue;
 			case 4: // Log out
-				System.out.println("Three");
 				us.logout(loggedin);
 				loggedin = null;
 				break;

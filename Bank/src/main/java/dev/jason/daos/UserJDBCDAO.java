@@ -155,7 +155,7 @@ public class UserJDBCDAO implements UserDAO{
 				if(rs.getInt("is_loggedin") == 1) user.setIsloggedin(true); 
 				else user.setIsloggedin(false);
 				if(rs.getInt("is_superuser") == 1) user.setIsSuperUser(true);
-				user.setIsSuperUser(false);
+				else user.setIsSuperUser(false);
 				users.add(user);
 			}
 

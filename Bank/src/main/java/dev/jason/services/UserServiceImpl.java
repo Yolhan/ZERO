@@ -434,7 +434,7 @@ public class UserServiceImpl implements UserService {
 			try {
 				int result = scan.nextInt();
 				scan.nextLine();
-				if (result > 0 && result < users.size()) {
+				if (result > 0 && result <= users.size()) {
 
 					String username;
 					String password;
@@ -499,6 +499,9 @@ public class UserServiceImpl implements UserService {
 					System.out.println(user);
 					user = udao.updateUser(user);
 					break;
+				}
+				else {
+					System.out.println("That is not a valid option. Please try again.");
 				}
 			} catch (InputMismatchException e) {
 				scan.nextLine();
